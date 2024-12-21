@@ -1,0 +1,29 @@
+### Register User
+POST {{base_url}}/register
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "password": "password"
+}
+
+
+### Login User
+POST {{base_url}}/login
+Content-Type: application/json
+
+{
+    "email": "john@gmail.com",
+    "password": "password"
+}
+
+
+### Get User
+GET {{base_url}}/me
+Authorization: Bearer {{token}}
+
+
+### logout
+POST {{base_url}}/logout
+Authorization: Bearer {{token}}
