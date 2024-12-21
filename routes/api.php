@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\TaskController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
