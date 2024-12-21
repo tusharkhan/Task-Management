@@ -12,7 +12,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-trait RequestTrait
+trait RequestTraitValidation
 {
     protected function failedValidation(Validator $validator) {
         throw new HttpResponseException(

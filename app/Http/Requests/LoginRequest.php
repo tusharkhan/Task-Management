@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Helpers\RequestTrait;
+use App\Http\Helpers\RequestTraitValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-    use RequestTrait;
+    use RequestTraitValidation;
     /**
      * Determine if the user is authorized to make this request.
      */

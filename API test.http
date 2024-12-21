@@ -27,3 +27,8 @@ Authorization: Bearer {{token}}
 ### logout
 POST {{base_url}}/logout
 Authorization: Bearer {{token}}
+
+
+### task lists
+GET {{base_url}}/tasks
+Authorization: Bearer {{token}}
