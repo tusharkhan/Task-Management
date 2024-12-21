@@ -6,60 +6,106 @@
  */
 ?>
 
-    <!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="UTF-8"/>
-    <title> Task </title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends("layout.main")
 
-    <!-- Load Stile -->
-    <link rel="stylesheet" href="{{ asset('assets/stylesheet/min.css') }}">
-
-    <!-- Meta SEO -->
-    <meta name="keyword" content=""/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
-    <link rel="canonical" href=""/>
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body>
+@section("content")
 
 <!-- Start Main Content -->
 <section class="container">
     <div class="row ">
         <div class="col-md-6 card mx-auto mt-5 p-4">
-            <form action="" >
-                <div class="form-group" >
-                    <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            <form id="login_form">
+
+                <div class="login-form">
+                    <h3 class="text-center p-4">Task Management</h3>
+                    <div class="form-group" >
+                        <label for="email">Email: <span class="text-danger">*</span> </label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" autocomplete="off">
+                        <span class="text-danger" id="email_error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd">Password: <span class="text-danger">*</span> </label>
+                        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd" autocomplete="off">
+                        <span class="text-danger" id="pwd_error"></span>
+                    </div>
+
+                    <button type="button" class="btn btn-primary">Login</button>
                 </div>
 
-                <div class="form-group">
-                    <label for="pwd">Password:</label>
-                    <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
-                </div>
-
-                <button type="submit" class="btn btn-primary text-black">Login</button>
             </form>
         </div>
     </div>
 </section>
+@endsection
 <!-- End Main Content-->
 
-<!-- Start Footer -->
-<footer>
+@push('scripts')
+    <script>
+        let form = $('#login_form');
+        let submitButton = form.find('button[type="button"]');
 
-</footer>
-<!-- End Footer -->
+        submitButton.on('click', function () {
+            let email = form.find('input[name="email"]').val();
+            let pwd = form.find('input[name="pwd"]').val();
 
-<!-- Start Script -->
-<script src="{{ asset('assets/javascript/min.js') }}"></script>
-</body>
-</html>
+            $('#email_error').text('');
+            $('#pwd_error').text('');
+
+            if(email === '' || pwd === ''){
+                if(email === ''){
+                    $('#email_error').text('Email is required');
+                }else{
+                    $('#email_error').text('');
+                }
+
+                if(pwd === ''){
+                    $('#pwd_error').text('Password is required');
+                }else{
+                    $('#pwd_error').text('');
+                }
+
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('api.login') }}',
+                type: 'POST',
+                data: {
+                    email: email,
+                    password: pwd
+                },
+                success: function (response) {
+                    if ( response.code == 200 ){
+                        // redirect to dashboard
+                        window.location.href = '{{ route('home') }}';
+                    }
+                },
+                error: function (error) {
+                    let errorResponse = error.responseJSON;
+                    let statusCode = error.status;
+                    if(errorResponse.errors){
+                        if ( statusCode == 422 ){
+                            if(errorResponse.errors.email){
+                                $('#email_error').text(errorResponse.errors.email[0]);
+                            }else{
+                                $('#email_error').text('');
+                            }
+
+                            if(errorResponse.errors.password){
+                                $('#pwd_error').text(errorResponse.errors.password[0]);
+                            }else{
+                                $('#pwd_error').text('');
+                            }
+                        } else if (statusCode == 401){
+                            let errorMessage = errorResponse.errors;
+                            toastr.error(errorMessage.error);
+                        } else {
+                            toastr.error("Internal Server Error");
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endpush

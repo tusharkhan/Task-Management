@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -17,9 +18,12 @@ class AuthController extends Controller
         $credentials = $loginRequest->only('email', 'password');
 
         if (!$token = Auth::guard('api')->attempt($credentials)) {
-            return sendError('Unauthorized', ['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            return sendError('Unauthorized', ['error' => 'Credentials mismatch'], Response::HTTP_UNAUTHORIZED);
         }
 
+        $user = Auth::guard('api')->user();
+
+        Session::flash('success', 'Welcome :' . $user->name);
         return sendSuccess(
             'Login Success',
             [
