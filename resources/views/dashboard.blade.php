@@ -43,6 +43,7 @@
                     </ul>
                 </nav>
             </div>
+
             <div class="col-xl-11 col-sm-10">
                 <div class="main-content">
                     <header class="header-content">
@@ -78,7 +79,13 @@
                                         <h4>Completed <span>(0)</span></h4>
                                     </header>
                                     <div class="board-content">
-                                        <ul class="list"></ul>
+                                        <ul class="list">
+                                            <div class="d-flex justify-content-center align-items-center vh-100">
+                                                <div class="spinner-border text-danger" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </ul>
                                     </div>
                                 </article>
                             </div>
@@ -89,7 +96,13 @@
                                         <span class="icon flaticon-more-1"></span>
                                     </header>
                                     <div class="board-content">
-                                        <ul class="list"></ul>
+                                        <ul class="list">
+                                            <div class="d-flex justify-content-center align-items-center vh-100">
+                                                <div class="spinner-border text-warning" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </ul>
                                     </div>
                                 </article>
                             </div>
@@ -100,7 +113,13 @@
                                         <span class="icon flaticon-more-1"></span>
                                     </header>
                                     <div class="board-content">
-                                        <ul class="list"></ul>
+                                        <ul class="list">
+                                            <div class="d-flex justify-content-center align-items-center vh-100">
+                                                <div class="spinner-border text-green" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </ul>
                                     </div>
                                 </article>
                             </div>
@@ -145,12 +164,15 @@
                 buttonWidth: '100%',
                 onChange: function() {
                     statuses = $('#status').val();
+                    loadTaskData(priorities, statuses);
                 },
                 onSelectAll: function () {
                     statuses = $('#status').val();
+                    loadTaskData(priorities, statuses);
                 },
                 onDeselectAll: function () {
                     statuses = $('#status').val();
+                    loadTaskData(priorities, statuses);
                 }
             });
 
@@ -160,12 +182,15 @@
                 buttonWidth: '100%',
                 onChange: function() {
                     priorities = $('#priority').val();
+                    loadTaskData(priorities, statuses);
                 },
                 onSelectAll: function () {
                     priorities = $('#priority').val();
+                    loadTaskData(priorities, statuses);
                 },
                 onDeselectAll: function () {
                     priorities = $('#priority').val();
+                    loadTaskData(priorities, statuses);
                 }
             });
         });
@@ -174,26 +199,52 @@
     <script>
         // document on load fetch task data
         function loadTaskData(priorities = [], statuses = []) {
+            let span_completed = $(".completed_article header h4 span");
+            let ul_completed = $(".completed_article .board-content ul");
+
+            let span_in_progress = $(".in_progress_article header h4 span");
+            let ul_in_progress = $(".in_progress_article .board-content ul");
+
+            let span_pending = $(".pending_article header h4 span");
+            let ul_pending = $(".pending_article .board-content ul");
+
             let taskUrl = "{{ route('api.tasks.index') }}";
             let token   = localStorage.getItem("access_token");
+
+            // data array send as json
             let data = {
                 priorities: priorities,
                 statuses: statuses
             };
 
+            console.log(data)
+
             $.ajax({
                 url: taskUrl,
                 type: 'POST',
-                data: data,
+                data: JSON.stringify(data),
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     xhr.setRequestHeader('Content-Type', 'application/json');
                 },
                 success: function (response) {
                     if(response.code == 200){
-                        addCompletedData(response.data.completed);
-                        addInProgressData(response.data.in_progress);
-                        addPendingData(response.data.pending);
+                        span_completed.text('(0)');
+                        ul_completed.empty();
+
+                        span_in_progress.text('(0)');
+                        ul_in_progress.empty();
+
+                        span_pending.text('(0)');
+                        ul_pending.empty();
+
+                        let completed = response.data.completed;
+                        let in_progress = response.data.in_progress;
+                        let pending = response.data.pending;
+
+                        if( completed ) addCompletedData(response.data.completed);
+                        if(in_progress) addInProgressData(response.data.in_progress);
+                        if(pending) addPendingData(response.data.pending);
                     }
                 },
                 error: function (error) {

@@ -205,7 +205,7 @@ body {background: #191c2e;font-size: 13px;overflow-x: hidden;direction: ltr;text
 
 .main-content .dashboard .board h4 {
     margin: 0;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .main-content .dashboard .board span.icon:before {
@@ -231,7 +231,6 @@ body {background: #191c2e;font-size: 13px;overflow-x: hidden;direction: ltr;text
 .board .board-content .task {
     border-left: 3px solid #38c3d5;
     padding: 10px;
-    cursor: pointer;
 }
 .board .board-content .task header {
     position: relative;
@@ -293,6 +292,41 @@ body {background: #191c2e;font-size: 13px;overflow-x: hidden;direction: ltr;text
 /* Customize the selected option color */
 .multiselect-container li.active a {
     color: #000 !important; /* White text */
+}
+
+.spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+.text-green{
+    color : #3fe671;
+}
+
+
+.action_icon_ul > li {
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.action_icon_ul > li::before{
+    margin-left: 0px !important;
+}
+
+.action_icon_ul > li::marker{
+    content: '';
+}
+
+@keyframes spinner-border {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media screen and (max-width: 1024px) {
