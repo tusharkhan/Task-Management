@@ -25,8 +25,8 @@ Route::group(['as' => 'api.'], function (){
         Route::get('/me', [AuthController::class, 'me'])->name('me');
 
         Route::group(['prefix' => 'tasks', 'as' => 'tasks.'], function () {
-            Route::get('/', [TaskController::class, 'index'])->name('index');
-            Route::post('/', [TaskController::class, 'store'])->name('store');
+            Route::post('/', [TaskController::class, 'index'])->name('index');
+            Route::post('/create', [TaskController::class, 'store'])->name('store');
             Route::get('/{id}', [TaskController::class, 'show'])->name('show');
             Route::put('/{id}', [TaskController::class, 'update'])->name('update');
             Route::delete('/{id}', [TaskController::class, 'destroy'])->name('destroy');

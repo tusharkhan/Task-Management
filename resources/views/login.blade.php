@@ -14,7 +14,7 @@
 <section class="container">
     <div class="row ">
         <div class="col-md-6 card mx-auto mt-5 p-4">
-            <form id="login_form">
+            <form id="login_form" method="post">
 
                 <div class="login-form">
                     <h3 class="text-center p-4">Task Management</h3>
@@ -30,7 +30,7 @@
                         <span class="text-danger" id="pwd_error"></span>
                     </div>
 
-                    <button type="button" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                 </div>
 
             </form>
@@ -42,10 +42,25 @@
 
 @push('scripts')
     <script>
+        // Check for JWT token on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("access_token"); // Replace with sessionStorage if preferred
+
+            if (token) {
+                window.location.href = '{{ route('home') }}';
+            }
+        });
+
+    </script>
+
+
+    <script>
         let form = $('#login_form');
         let submitButton = form.find('button[type="button"]');
 
-        submitButton.on('click', function () {
+        form.on('submit', function (event) {
+            event.preventDefault();
+
             let email = form.find('input[name="email"]').val();
             let pwd = form.find('input[name="pwd"]').val();
 
@@ -76,7 +91,16 @@
                     password: pwd
                 },
                 success: function (response) {
+                    console.log(response);
                     if ( response.code == 200 ){
+                        let token = response.data.access_token;
+                        let username = response.data.user.name;
+                        let userid = response.data.user.id;
+
+                        // store token in local storage
+                        localStorage.setItem('access_token', token);
+                        localStorage.setItem('username', username);
+
                         // redirect to dashboard
                         window.location.href = '{{ route('home') }}';
                     }

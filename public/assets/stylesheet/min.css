@@ -270,6 +270,31 @@ body {background: #191c2e;font-size: 13px;overflow-x: hidden;direction: ltr;text
     /*height: 100vh;*/
 }
 
+.multiselect{
+    background: #007bff;
+}
+
+.multiselect::after{
+    color: #fff;
+}
+
+
+/* Change the text color of options */
+.multiselect-container li a {
+    color: #000 !important;
+    margin: 0px !important;
+    display: block !important;
+}
+
+.multiselect-selected-text{
+    color: #fff !important;
+}
+
+/* Customize the selected option color */
+.multiselect-container li.active a {
+    color: #000 !important; /* White text */
+}
+
 @media screen and (max-width: 1024px) {
     .wrapper .menu-left {
         padding: 20px;

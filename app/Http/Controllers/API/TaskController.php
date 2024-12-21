@@ -16,11 +16,23 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::guard('api')->user();
-        $tasks = Task::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
+        $priorities = $request->input('priorities');
+        $statuses = $request->input('statuses');
+
+        $tasks = Task::where('user_id', $user->id);
+
+        if ($priorities){
+            $tasks = $tasks->whereIn('priority', $priorities);
+        }
+
+        if ($statuses){
+            $tasks = $tasks->whereIn('status', $statuses);
+        }
+
+        $tasks = $tasks->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('status');
 

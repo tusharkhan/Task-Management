@@ -24,6 +24,7 @@ class AuthController extends Controller
         $user = Auth::guard('api')->user();
 
         Session::flash('success', 'Welcome :' . $user->name);
+
         return sendSuccess(
             'Login Success',
             [
