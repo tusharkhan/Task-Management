@@ -32,3 +32,43 @@ Authorization: Bearer {{token}}
 ### task lists
 GET {{base_url}}/tasks
 Authorization: Bearer {{token}}
+
+
+### create task
+POST {{base_url}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title" : "Task 1",
+    "description": "Task 1",
+    "priority": "high",
+    "status": "pending",
+    "due_date": "2021-12-12",
+    "is_completed": false
+}
+
+
+### get task
+GET {{base_url}}/tasks/50
+Authorization: Bearer {{token}}
+
+
+### update task
+PUT {{base_url}}/tasks/51
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title" : "Task 1",
+    "description": "Task 1",
+    "priority": "low",
+    "status": "pending",
+    "due_date": "2021-12-12",
+    "is_completed": false
+}
+
+
+### delete task
+DELETE {{base_url}}/tasks/51
+Authorization: Bearer {{token}}
