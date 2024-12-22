@@ -25,14 +25,14 @@
                     </div>
                 @endif
 
-                    @if (session('success'))
-                        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                            <strong>Success!</strong> {{ session('success') }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    @endif
+                @if (session('success'))
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
 
                 <div class="login-form">
                     <h3 class="text-center p-4">Task Management Login</h3>
@@ -50,6 +50,7 @@
 
                     <button type="submit" class="btn btn-primary">Login</button>
                     <p>Dont have account ? <a href="{{ route('register') }}">Register here</a> </p>
+                    <p>Forgot Password ? <a href="{{ route('forget.password.get') }}">Reset Password</a> </p>
                 </div>
 
             </form>

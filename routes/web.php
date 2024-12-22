@@ -21,6 +21,14 @@ Route::get("register", [App\Http\Controllers\Front\Auth\AuthController::class, '
 
 Route::get('email/verify/{token}', [App\Http\Controllers\Front\Auth\AuthController::class, 'verifyEmail'])->name('email.verify');
 
+Route::get('forget-password', [App\Http\Controllers\Front\Auth\AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+
+Route::post('forget-password', [App\Http\Controllers\Front\Auth\AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
+
+Route::get('reset-password/{token}', [App\Http\Controllers\Front\Auth\AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
+
+Route::post('reset-password', [App\Http\Controllers\Front\Auth\AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+
 
 Route::get('/mailable', function () {
     $user = App\Models\User::find(4);
