@@ -46,3 +46,14 @@ if ( ! function_exists('sendSuccess') ){
         return response($response, $code);
     }
 }
+
+
+if( ! function_exists('randomHashString') ){
+    /**
+     * @param int $length
+     * @return string
+     */
+    function randomHashString($length = 16) {
+        return hash('sha256', random_bytes($length));
+    }
+}

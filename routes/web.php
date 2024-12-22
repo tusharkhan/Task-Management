@@ -18,3 +18,18 @@ Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->na
 Route::get('login', [App\Http\Controllers\Front\Auth\AuthController::class, 'showLoginForm'])->name('login');
 
 Route::get("register", [App\Http\Controllers\Front\Auth\AuthController::class, 'showRegisterForm'])->name('register');
+
+Route::get('email/verify/{token}', [App\Http\Controllers\Front\Auth\AuthController::class, 'verifyEmail'])->name('email.verify');
+
+
+Route::get('/mailable', function () {
+    $user = App\Models\User::find(4);
+    $data = [
+        'user' => $user,
+        'link' => route('email.verify', "sefsefsefsef") ,
+        'expires_at' => '2024-12-21 00:00:00',
+        'brand_name' => config('app.name')
+    ];
+
+    return new App\Mail\RegistrationVerificationMail($data);
+});
