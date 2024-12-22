@@ -144,6 +144,8 @@
                 </div>
 
                 <form id="task_create_delete_form" onsubmit="return createUpdateModal(this)" >
+                    <input type="hidden" id="action_type" value="create">
+                    <input type="hidden" id="task_id" value="">
                     <div class="modal-body">
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -362,8 +364,17 @@
         var modalTitle = $("#exampleModalLongTitle");
         var create_delete_button = $("#create_delete_button");
 
-        createTaskModalCenter.on('show.bs.modal', function (event) {
+        createTaskModalCenter.on('hide.bs.modal', function (event) {
             modalTitle.text('Create Task');
+            create_delete_button.text('Create Task');
+            $("#title").val('');
+            $("#dueDate").val('');
+            $("#description").val('');
+            $("#inputState").val('');
+            $("#inputPriority").val('');
+            $("#gridCheck").prop('checked', false);
+            $("#task_id").val('');
+            $("#action_type").val('create');
         });
 
         function createUpdateModal(){
@@ -373,9 +384,30 @@
             let status = $("#inputState").val();
             let priority = $("#inputPriority").val();
             let is_completed = $("#gridCheck").is(":checked");
+            let action_type = $("#action_type").val();
 
             let token = localStorage.getItem("access_token");
+
             let taskUrl = "{{ route('api.tasks.store') }}";
+            let method = 'POST';
+
+            if(action_type == 'update'){
+                let id = $("#task_id").val();
+                taskUrl = "{{ route('api.tasks.update', ':id') }}";
+                taskUrl = taskUrl.replace(':id', id);
+                method = 'PUT';
+            } else {
+                $("#title").val('');
+                $("#dueDate").val('');
+                $("#description").val('');
+                $("#inputState").val('');
+                $("#inputPriority").val('');
+                $("#gridCheck").prop('checked', false);
+
+                modalTitle.text('Create Task');
+                create_delete_button.text('Create Task');
+            }
+
 
             let data = {
                 title: title,
@@ -388,16 +420,20 @@
 
             $.ajax({
                 url: taskUrl,
-                type: 'POST',
+                type: method,
                 data: JSON.stringify(data),
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     xhr.setRequestHeader('Content-Type', 'application/json');
                 },
                 success: function (response) {
-                    if(response.code == 201){
+                    if(response.code == 201 || response.code == 200){
                         loadTaskData();
-                        toastr.success("Task created successfully");
+                        if(action_type == 'update'){
+                            toastr.info(response.message);
+                        } else {
+                            toastr.success(response.message);
+                        }
                         createTaskModalCenter.modal('hide');
                     }
                 },
@@ -463,11 +499,6 @@
             let showUrl = "{{ route('api.tasks.show', ':id') }}";
             showUrl = showUrl.replace(':id', id);
 
-            createTaskModalCenter.on('show.bs.modal', function (event) {
-                modalTitle.text('Edit Task');
-                create_delete_button.text('Update Task');
-            });
-
             $.ajax({
                 url: showUrl,
                 type: 'GET',
@@ -490,8 +521,11 @@
                         $("#inputState").val(status);
                         $("#inputPriority").val(priority);
                         $("#gridCheck").prop('checked', is_completed);
+                        $("#task_id").val(id);
+                        $("#action_type").val('update');
 
-                        modalTitle.text('Update Task');
+                        modalTitle.text('Edit Task');
+                        create_delete_button.text('Update Task');
                     }
                 },
                 error: function (error) {
