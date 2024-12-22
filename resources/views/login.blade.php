@@ -44,7 +44,7 @@
     <script>
         // Check for JWT token on page load
         document.addEventListener("DOMContentLoaded", function () {
-            const token = localStorage.getItem("access_token"); // Replace with sessionStorage if preferred
+            const token = localStorage.getItem("access_token");
 
             if (token) {
                 window.location.href = '{{ route('home') }}';

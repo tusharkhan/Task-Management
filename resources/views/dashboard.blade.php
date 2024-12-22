@@ -29,13 +29,13 @@
                 <nav class="menu-left">
                     <ul class="list">
                         <li>
-                            <a href="#" title="" class="active">
+                            <a href="{{ route('home') }}" title="" class="active">
                                 <span class="icon flaticon-notepad-1"></span>
                                 <span class="text">Tasks</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" title="">
+                            <a href="#" title="" id="logout">
                                 <span class="icon flaticon-power"></span>
                                 <span class="text">Exit</span>
                             </a>
@@ -139,7 +139,7 @@
     <script>
         // Check for JWT token on page load
         document.addEventListener("DOMContentLoaded", function () {
-            const token = localStorage.getItem("access_token"); // Replace with sessionStorage if preferred
+            const token = localStorage.getItem("access_token");
 
             if (!token) {
                 window.location.href = '{{ route('login') }}';
@@ -253,5 +253,35 @@
             });
         }
 
+    </script>
+
+    <script>
+        let logout = $("#logout");
+
+        logout.on('click', function (){
+            const token = localStorage.getItem("access_token");
+
+            if( token ) {
+                let logoutUrl = "{{ route('api.logout') }}";
+
+                $.ajax({
+                    url: logoutUrl,
+                    type: 'POST',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
+                    success: function (response) {
+                        if(response.code == 200){
+                            localStorage.removeItem("access_token");
+                            localStorage.removeItem("username");
+                            window.location.href = '{{ route('login') }}';
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
     </script>
 @endpush
