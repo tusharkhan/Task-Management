@@ -44,6 +44,44 @@
         localStorage.removeItem("access_token");
         localStorage.removeItem("username");
     }
+
+    function logoutAndRedirect() {
+        deleteAll();
+        window.location.href = "{{ route('login') }}";
+    }
+
+    function loginUrl() {
+        window.location.href = "{{ route('login') }}";
+    }
+
+    function home() {
+        window.location.href = "{{ route('home') }}";
+    }
+
+
+    function taskListUrl(){
+        return "{{ route('api.tasks.index') }}";
+    }
+
+    function logoutUrl(){
+        return "{{ route('api.logout') }}";
+    }
+
+    function taskCreateUrl(){
+        return "{{ route('api.tasks.store') }}";
+    }
+
+    function taskUpdateUrl(id){
+        return "{{ route('api.tasks.update', ':id') }}".replace(':id', id);
+    }
+
+    function taskDeleteUrl(id){
+        return "{{ route('api.tasks.destroy', ':id') }}".replace(':id', id);
+    }
+
+    function taskShowUrl(id){
+        return "{{ route('api.tasks.show', ':id') }}".replace(':id', id);
+    }
 </script>
 
 @stack('scripts')
