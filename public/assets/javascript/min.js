@@ -57,7 +57,7 @@ function createList(data, color){
         let firstCol = $("<div>").addClass("col-12");
         let rowDiv2 = $("<div>").addClass("row");
         let secondCol = $("<div>").addClass("col-9");
-        let h3 = $("<h3>").text(task.title);
+        let h3 = $("<h3 class='cursor-pointer' onclick='showTask("+data.id+")' >").text(task.title);
         let thirdCol = $("<div>").addClass("col-3");
         let ul = $("<ul>").addClass("action_icon_ul");
         let editLi = $("<li class='cursor-pointer' onclick='editTask("+ data.id +")'>").addClass("icon flaticon-edit");

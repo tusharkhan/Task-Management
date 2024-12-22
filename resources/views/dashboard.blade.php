@@ -132,7 +132,7 @@
     <!-- End Main Content-->
 
 
-    <!-- Save Task -->
+    <!-- Save or edit Task -->
     <div class="modal fade bd-example-modal-lg" id="createTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -201,6 +201,38 @@
                         <button type="submit" class="btn btn-primary" id="create_delete_button">Create Task</button>
                     </div>
                 </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade bd-example-modal-lg" id="viewTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="showTaskModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showTaskModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="show_task_modal_body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 id="span_status"> Status :<span class="badge badge-primary">Primary</span> </h5>
+                                <h5 id="span_priority">Priority :<span class="badge badge-secondary">Secondary</span></h5>
+                                <h5 id="span_date">Due Date :<span class="badge badge-dark">Success</span></h5>
+                            </div>
+                            <hr>
+                            <p class="card-text" id="task_des">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
 
             </div>
         </div>
@@ -538,6 +570,94 @@
                         toastr.error("Something went wrong while fetching task data");
                     }
 
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function showTask(id){
+            let viewTaskModalCenter = $("#viewTaskModalCenter");
+            let token = localStorage.getItem("access_token");
+            let showUrl = "{{ route('api.tasks.show', ':id') }}";
+            showUrl = showUrl.replace(':id', id);
+            viewTaskModalCenter.modal('show');
+
+            $.ajax({
+                url: showUrl,
+                type: 'GET',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (response) {
+                    if(response.code == 200) {
+                        let task = response.data;
+                        let title = task.title;
+                        let dueDate = task.due_date;
+                        let description = task.description;
+                        let status = task.status;
+                        let priority = task.priority;
+                        let is_completed = task.is_completed;
+
+                        let showTaskModalLongTitle = $("#showTaskModalLongTitle");
+                        showTaskModalLongTitle.text("Title :" + title);
+
+                        let date = new Date(dueDate);
+                        dueDate = date.toDateString();
+
+
+                        let span_status = $("#span_status");
+                        let span_priority = $("#span_priority");
+                        let span_date = $("#span_date");
+                        let task_des = $("#task_des");
+
+                        // empty all
+                        span_status.empty();
+                        span_priority.empty();
+                        span_date.empty();
+                        task_des.empty();
+
+
+                        let badgeClass = 'primary';
+                        if(priority == 'low'){
+                            badgeClass = 'secondary';
+                        } else if(priority == 'medium'){
+                            badgeClass = 'warning';
+                        } else if(priority == 'high'){
+                            badgeClass = 'danger';
+                        }
+                        let priorityText = '<span class="badge badge-'+ badgeClass +'" >'+ priority +'</span>'
+                        span_priority.append('Priority : ' + priorityText);
+
+                        badgeClass = 'red';
+                        if(status == 'pending'){
+                            badgeClass = 'green';
+                        } else if(status == 'in_progress'){
+                            badgeClass = 'yellow';
+                        } else if(status == 'completed'){
+                            badgeClass = 'red';
+                        }
+
+                        status = status.replace('_', ' ').toUpperCase();
+
+                        let statusText = '<span class="badge badge-'+ badgeClass +'" >'+ status +'</span>'
+                        span_status.append('Status : ' + statusText);
+
+                        span_date.append('Due Date : ' + '<span class="badge badge-dark">'+ dueDate +'</span>');
+                        task_des.append(description);
+
+
+                    }
+                },
+                error: function (error) {
+                    let statusCode = error.status;
+                    if(statusCode == 401){
+                        toastr.error("Unauthorized access");
+                        deleteAll();
+                        window.location.href = '{{ route('login') }}';
+                    } else {
+                        toastr.error("Something went wrong while fetching task data");
+                    }
                 }
             });
         }

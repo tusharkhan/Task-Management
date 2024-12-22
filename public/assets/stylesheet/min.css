@@ -327,6 +327,21 @@ body {background: #191c2e;font-size: 13px;overflow-x: hidden;direction: ltr;text
     cursor: pointer;
 }
 
+.badge-yellow{
+    background: #f5a623;
+    color: #fff;
+}
+
+.badge-red{
+    background: #f95a6c;
+    color: #fff;
+}
+
+.badge-green{
+    background: #3fe671;
+    color: #fff;
+}
+
 @keyframes spinner-border {
     100% {
         transform: rotate(360deg);
