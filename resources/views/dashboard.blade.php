@@ -220,12 +220,12 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <h5 id="span_status"> Status :<span class="badge badge-primary">Primary</span> </h5>
-                                <h5 id="span_priority">Priority :<span class="badge badge-secondary">Secondary</span></h5>
-                                <h5 id="span_date">Due Date :<span class="badge badge-dark">Success</span></h5>
+                                <h5 id="span_status">  </h5>
+                                <h5 id="span_priority"></h5>
+                                <h5 id="span_date"></h5>
                             </div>
                             <hr>
-                            <p class="card-text" id="task_des">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <p class="card-text" id="task_des"></p>
                         </div>
                     </div>
                 </div>
@@ -243,20 +243,13 @@
 @push('scripts')
     <script src="{{asset('assets/javascript/bootstrap-multiselect.min.js')}}"></script>
     <script src="{{ asset('assets/javascript/min.js') }}"></script>
+
     <script>
-        // Check for JWT token on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            const token = localStorage.getItem("access_token");
+        let user_name_header = $("#user_name_header");
+        let user_name = localStorage.getItem("username");
+        user_name_header.text(user_name);
 
-            if (!token) {
-                window.location.href = '{{ route('login') }}';
-            } else {
-                let user_name_header = $("#user_name_header");
-                let user_name = localStorage.getItem("username");
-                user_name_header.text(user_name);
-
-                loadTaskData();
-            }
-        });
+        loadTaskData();
     </script>
+
 @endpush

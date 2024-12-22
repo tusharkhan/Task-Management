@@ -21,10 +21,6 @@ class AuthController extends Controller
             return sendError('Unauthorized', ['error' => 'Credentials mismatch'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $user = Auth::guard('api')->user();
-
-        Session::flash('success', 'Welcome :' . $user->name);
-
         return sendSuccess(
             'Login Success',
             [

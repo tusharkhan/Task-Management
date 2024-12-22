@@ -15,4 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home');
 
-Route::get('login', [App\Http\Controllers\Front\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::get('login', [App\Http\Controllers\Front\Auth\AuthController::class, 'showLoginForm'])->name('login');
+
+Route::get("register", [App\Http\Controllers\Front\Auth\AuthController::class, 'showRegisterForm'])->name('register');

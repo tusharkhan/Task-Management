@@ -31,5 +31,23 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script>
+        const token = localStorage.getItem("access_token");
+        let currentUrl = window.location.href;
+        // remove last slash
+        currentUrl = currentUrl.replace(/\/$/, "");
+
+        if( currentUrl == "{{route('home')}}" ){
+            if (!token) {
+                window.location.href = '{{ route('login') }}';
+            }
+        } else if ( currentUrl == "{{route('login')}}" ){
+            if (token) {
+                window.location.href = '{{ route('home') }}';
+            }
+        }
+    </script>
+
 </head>
 <body>

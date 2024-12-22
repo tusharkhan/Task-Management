@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        if ( Session::get('login') ) return redirect()->route('home');
         return view('login');
+    }
+
+    public function showRegisterForm()
+    {
+        return view('register');
     }
 }

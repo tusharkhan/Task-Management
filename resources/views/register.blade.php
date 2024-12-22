@@ -14,10 +14,16 @@
 <section class="container">
     <div class="row ">
         <div class="col-md-6 card mx-auto mt-5 p-4">
-            <form id="login_form" method="post">
+            <form id="register_form" method="post">
 
                 <div class="login-form">
-                    <h3 class="text-center p-4">Task Management Login</h3>
+                    <h3 class="text-center p-4">Task Management Registration</h3>
+                    <div class="form-group" >
+                        <label for="name">Name: <span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter name" name="name" autocomplete="off">
+                        <span class="text-danger" id="name_error"></span>
+                    </div>
+
                     <div class="form-group" >
                         <label for="email">Email: <span class="text-danger">*</span> </label>
                         <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" autocomplete="off">
@@ -30,8 +36,7 @@
                         <span class="text-danger" id="pwd_error"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <p>Dont have account ? <a href="{{ route('register') }}">Register here</a> </p>
+                    <button type="submit" id="register_button" class="btn btn-primary">Register</button>
                 </div>
 
             </form>
@@ -43,21 +48,23 @@
 
 @push('scripts')
     <script>
-        let form = $('#login_form');
-        let submitButton = form.find('button[type="submit"]');
+        var form = $('#register_form');
+        var submitButton = form.find('button[type="submit"]');
 
         form.on('submit', function (event) {
             event.preventDefault();
 
             let email = form.find('input[name="email"]').val();
+            let name = form.find('input[name="name"]').val();
             let pwd = form.find('input[name="pwd"]').val();
 
             enableSpinnerForButton(submitButton);
 
             $('#email_error').text('');
             $('#pwd_error').text('');
+            $('#name_error').text('');
 
-            if(email === '' || pwd === ''){
+            if(email === '' || pwd === '' || name === ''){
                 if(email === ''){
                     $('#email_error').text('Email is required');
                 }else{
@@ -70,23 +77,28 @@
                     $('#pwd_error').text('');
                 }
 
+                if(name === ''){
+                    $('#name_error').text('Name is required');
+                }else{
+                    $('#name_error').text('');
+                }
+
                 return;
             }
 
             $.ajax({
-                url: '{{ route('api.login') }}',
+                url: '{{ route('api.register') }}',
                 type: 'POST',
                 data: {
                     email: email,
-                    password: pwd
+                    password: pwd,
+                    name: name
                 },
                 success: function (response) {
                     console.log(response);
-                    if ( response.code == 200 ){
+                    if ( response.code == 201 ){
                         let token = response.data.access_token;
                         let username = response.data.user.name;
-                        let userid = response.data.user.id;
-
                         // store token in local storage
                         localStorage.setItem('access_token', token);
                         localStorage.setItem('username', username);
@@ -96,7 +108,7 @@
                     }
                 },
                 error: function (error) {
-                    disableSpinnerForButton(submitButton, 'Login');
+                    disableSpinnerForButton(submitButton, 'Register');
                     let errorResponse = error.responseJSON;
                     let statusCode = error.status;
                     if(errorResponse.errors){
@@ -111,6 +123,12 @@
                                 $('#pwd_error').text(errorResponse.errors.password[0]);
                             }else{
                                 $('#pwd_error').text('');
+                            }
+
+                            if( errorResponse.errors.name ){
+                                $('#name_error').text(errorResponse.errors.name[0]);
+                            } else {
+                                $('#name_error').text('');
                             }
                         } else if (statusCode == 401){
                             let errorMessage = errorResponse.errors;
