@@ -30,7 +30,7 @@ Authorization: Bearer {{token}}
 
 
 ### task lists
-GET {{base_url}}/tasks
+POST {{base_url}}/tasks
 Authorization: Bearer {{token}}
 
 
