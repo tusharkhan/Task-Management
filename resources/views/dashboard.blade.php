@@ -68,7 +68,7 @@
                             </li>
                         </ul>
                         <div class="action">
-                            <button class="btn btn-blue">New Task <span class="flaticon-add"></span></button>
+                            <button class="btn btn-blue" data-toggle="modal" data-target="#createTaskModalCenter">New Task <span class="flaticon-add"></span></button>
                         </div>
                     </header>
                     <div class="dashboard">
@@ -130,6 +130,79 @@
         </div>
     </section>
     <!-- End Main Content-->
+
+
+    <!-- Save Task -->
+    <div class="modal fade bd-example-modal-lg" id="createTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="task_create_delete_form" onsubmit="return createUpdateModal(this)" >
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="title">Title <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control" id="title" placeholder="Title">
+                                <span class="text-danger" id="title_error"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="dueDate">Due Date <span class="text-danger">*</span> </label>
+                                <input type="date" class="form-control" id="dueDate" placeholder="Due Date">
+                                <span class="text-danger" id="due_date_error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description <span class="text-danger">*</span> </label>
+                            <textarea type="text" class="form-control" id="description" placeholder="1234 Main St"> </textarea>
+                            <span class="text-danger" id="description_error"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputState">Select Status <span class="text-danger">*</span> </label>
+                                <select id="inputState" name="status" class="form-control">
+                                    <option selected disabled>Select Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                                <span class="text-danger" id="status_error"></span>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="inputPriority">Priority <span class="text-danger">*</span> </label>
+                                <select id="inputPriority" name="priority" class="form-control">
+                                    <option selected disabled>Select Priority</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <span class="text-danger" id="priority_error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" name="is_completed" type="checkbox" id="gridCheck">
+                                <label class="form-check-label" for="gridCheck">
+                                    Mark as Completed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="create_delete_button">Create Task</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -261,27 +334,178 @@
         logout.on('click', function (){
             const token = localStorage.getItem("access_token");
 
-            if( token ) {
-                let logoutUrl = "{{ route('api.logout') }}";
+            let logoutUrl = "{{ route('api.logout') }}";
 
-                $.ajax({
-                    url: logoutUrl,
-                    type: 'POST',
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                    },
-                    success: function (response) {
-                        if(response.code == 200){
-                            localStorage.removeItem("access_token");
-                            localStorage.removeItem("username");
-                            window.location.href = '{{ route('login') }}';
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
+            $.ajax({
+                url: logoutUrl,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (response) {
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+            if( token ) {
+                deleteAll();
+                window.location.href = '{{ route('login') }}';
             }
         });
+    </script>
+
+    <script>
+        var createTaskModalCenter = $("#createTaskModalCenter");
+        var modalTitle = $("#exampleModalLongTitle");
+        var create_delete_button = $("#create_delete_button");
+
+        createTaskModalCenter.on('show.bs.modal', function (event) {
+            modalTitle.text('Create Task');
+        });
+
+        function createUpdateModal(){
+            let title = $("#title").val();
+            let dueDate = $("#dueDate").val();
+            let description = $("#description").val();
+            let status = $("#inputState").val();
+            let priority = $("#inputPriority").val();
+            let is_completed = $("#gridCheck").is(":checked");
+
+            let token = localStorage.getItem("access_token");
+            let taskUrl = "{{ route('api.tasks.store') }}";
+
+            let data = {
+                title: title,
+                due_date: dueDate,
+                description: description,
+                status: status,
+                priority: priority,
+                is_completed: is_completed
+            };
+
+            $.ajax({
+                url: taskUrl,
+                type: 'POST',
+                data: JSON.stringify(data),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                },
+                success: function (response) {
+                    if(response.code == 201){
+                        loadTaskData();
+                        toastr.success("Task created successfully");
+                        createTaskModalCenter.modal('hide');
+                    }
+                },
+                error: function (error) {
+                    let errorResponse = error.responseJSON;
+                    let statusCode = error.status;
+
+                    if(statusCode == 422){
+                        let errors = errorResponse.errors;
+                        let titleError = errors.title ? errors.title[0] : '';
+                        let dueDateError = errors.due_date ? errors.due_date[0] : '';
+                        let descriptionError = errors.description ? errors.description[0] : '';
+                        let statusError = errors.status ? errors.status[0] : '';
+                        let priorityError = errors.priority ? errors.priority[0] : '';
+
+                        $("#title_error").text(titleError);
+                        $("#due_date_error").text(dueDateError);
+                        $("#description_error").text(descriptionError);
+                        $("#status_error").text(statusError);
+                        $("#priority_error").text(priorityError);
+                    } else if(statusCode == 401){
+                        toastr.error("Unauthorized access");
+                        window.location.href = '{{ route('login') }}';
+                    } else {
+                        toastr.error("Something went wrong");
+                    }
+                }
+            });
+
+            return false;
+        }
+    </script>
+
+    <script>
+        function deleteTask(id){
+            let token = localStorage.getItem("access_token");
+            let taskUrl = "{{ route('api.tasks.destroy', ':id') }}";
+            taskUrl = taskUrl.replace(':id', id);
+
+            $.ajax({
+                url: taskUrl,
+                type: 'DELETE',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (response) {
+                    if(response.code == 200){
+                        toastr.warning(response.message);
+                        loadTaskData();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function editTask(id){
+            createTaskModalCenter.modal('show');
+            let token = localStorage.getItem("access_token");
+            let showUrl = "{{ route('api.tasks.show', ':id') }}";
+            showUrl = showUrl.replace(':id', id);
+
+            createTaskModalCenter.on('show.bs.modal', function (event) {
+                modalTitle.text('Edit Task');
+                create_delete_button.text('Update Task');
+            });
+
+            $.ajax({
+                url: showUrl,
+                type: 'GET',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (response) {
+                    if(response.code == 200){
+                        let task = response.data;
+                        let title = task.title;
+                        let dueDate = task.due_date;
+                        let description = task.description;
+                        let status = task.status;
+                        let priority = task.priority;
+                        let is_completed = task.is_completed;
+
+                        $("#title").val(title);
+                        $("#dueDate").val(dueDate);
+                        $("#description").val(description);
+                        $("#inputState").val(status);
+                        $("#inputPriority").val(priority);
+                        $("#gridCheck").prop('checked', is_completed);
+
+                        modalTitle.text('Update Task');
+                    }
+                },
+                error: function (error) {
+                    let statusCode = error.status;
+                    if(statusCode == 401){
+                        toastr.error("Unauthorized access");
+                        deleteAll();
+                        window.location.href = '{{ route('login') }}';
+                    } else {
+                        toastr.error("Something went wrong while fetching task data");
+                    }
+
+                }
+            });
+        }
     </script>
 @endpush

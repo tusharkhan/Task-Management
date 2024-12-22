@@ -128,6 +128,9 @@ class TaskController extends Controller
         $task->priority = $request->priority;
         $task->is_completed = $request->is_completed;
         $task->due_date = Carbon::parse($request->due_date)->format('Y-m-d');
+
+        if($request->is_completed ) $task->status = 'completed';
+
         return $task;
     }
 }

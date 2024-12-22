@@ -25,7 +25,7 @@
         "debug": false,
         "newestOnTop": true,
         "progressBar": true,
-        "positionClass": "toast-top-right",
+        "positionClass": "toast-top-center",
         "preventDuplicates": true,
         "onclick": null,
         "showDuration": "300",
@@ -39,11 +39,12 @@
     }
 </script>
 
-@if( \Illuminate\Support\Facades\Session::has('success') )
-    <script>
-        toastr.success("{{ \Illuminate\Support\Facades\Session::get('success') }}");
-    </script>
-@endif
+<script>
+    function deleteAll() {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("username");
+    }
+</script>
 
 @stack('scripts')
 </body>

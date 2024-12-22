@@ -125,7 +125,7 @@
                             let errorMessage = errorResponse.errors;
                             toastr.error(errorMessage.error);
                         } else {
-                            toastr.error("Internal Server Error");
+                            toastr.error("Something went wrong. Please try again later.");
                         }
                     }
                 }

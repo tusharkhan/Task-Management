@@ -60,8 +60,8 @@ function createList(data, color){
         let h3 = $("<h3>").text(task.title);
         let thirdCol = $("<div>").addClass("col-3");
         let ul = $("<ul>").addClass("action_icon_ul");
-        let editLi = $("<li>").addClass("icon flaticon-edit");
-        let deleteLi = $("<li>").addClass("icon flaticon-garbage text-danger");
+        let editLi = $("<li class='cursor-pointer' onclick='editTask("+ data.id +")'>").addClass("icon flaticon-edit");
+        let deleteLi = $("<li class='cursor-pointer' onclick='deleteTask("+ data.id +")'>").addClass("icon flaticon-garbage text-danger");
         let fourthCol = $("<div>").addClass("col-12");
         let taskContent = $("<div>").addClass("task-content").text(task.description);
 
