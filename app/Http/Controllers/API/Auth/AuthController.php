@@ -20,6 +20,12 @@ class AuthController extends Controller
     {
         $credentials = $loginRequest->only('email', 'password');
 
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || is_null($user->email_verified_at)) {
+            return sendError('Unauthorized', ['error' => 'Email not verified'], Response::HTTP_UNAUTHORIZED);
+        }
+
         if (!$token = Auth::guard('api')->attempt($credentials)) {
             return sendError('Unauthorized', ['error' => 'Credentials mismatch'], Response::HTTP_UNAUTHORIZED);
         }
