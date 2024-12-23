@@ -39,5 +39,5 @@ For the installation of the application, follow the steps below:
    
 5. Install the application:
     ```bash
-    php artisan key:generate
+    php artisan app:install
     ```
