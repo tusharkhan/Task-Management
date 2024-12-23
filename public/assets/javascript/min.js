@@ -450,7 +450,12 @@ function createList(data, color) {
 
     let priority = data.priority.replace('_', ' ').toUpperCase();
 
-    let priorityText = '<p style="font-size: 15px" class="badge badge-' + badgeClass + '" >' + priority + '</p>'
+    let priorityText = '<p style="font-size: 15px" class="badge badge-' + badgeClass + '" >' + priority + '</p>';
+
+    let date = new Date(data.due_date);
+    let dueDate = date.toDateString();
+
+    let duedatep = '<p style="font-size: 15px" class="badge badge-light" > Due Date: ' + dueDate + '</p>'
 
     let thirdCol = $("<div>").addClass("col-3");
     let ul = $("<ul>").addClass("action_icon_ul");
@@ -466,6 +471,7 @@ function createList(data, color) {
     rowDiv2.append(secondCol, thirdCol);
     firstCol.append(rowDiv2);
     firstCol.append(priorityText);
+    firstCol.append(duedatep);
     fourthCol.append(taskContent);
     rowDiv.append(firstCol, fourthCol);
     taskdiv.append(rowDiv);

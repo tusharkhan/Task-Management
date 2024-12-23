@@ -93,7 +93,6 @@
                                 <article class="board yellow in_progress_article">
                                     <header>
                                         <h4>In progress <span>(0)</span></h4>
-                                        <span class="icon flaticon-more-1"></span>
                                     </header>
                                     <div class="board-content">
                                         <ul class="list">
@@ -110,7 +109,6 @@
                                 <article class="board green pending_article">
                                     <header>
                                         <h4>Pending <span>(0)</span></h4>
-                                        <span class="icon flaticon-more-1"></span>
                                     </header>
                                     <div class="board-content">
                                         <ul class="list">

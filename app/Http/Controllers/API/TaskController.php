@@ -32,7 +32,7 @@ class TaskController extends Controller
             $tasks = $tasks->whereIn('status', $statuses);
         }
 
-        $tasks = $tasks->orderBy('created_at', 'desc')
+        $tasks = $tasks->orderBy('due_date', 'desc')
             ->get()
             ->groupBy('status');
 
