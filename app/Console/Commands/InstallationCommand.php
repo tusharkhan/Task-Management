@@ -29,9 +29,6 @@ class InstallationCommand extends Command
         $appName = $this->ask('What is the application name?');
         $this->setAppName($appName);
 
-        // set application key
-        $this->call('key:generate');
-
         // ask for database informations
         $dbHost = $this->ask('What is the database host?');
         $dbName = $this->ask('What is the database name?');
@@ -41,14 +38,6 @@ class InstallationCommand extends Command
         // set database information's
         $this->setDatabaseConfig($dbHost, $dbName, $dbUser, $dbPassword);
 
-        // migrate fresh
-        $this->call('migrate:fresh');
-
-        // seed database
-        $this->call('db:seed');
-
-        // install jwt secret
-        $this->call('jwt:secret');
 
         // ask for mail configuration
         $mailDriver = $this->ask('What is the mail driver?');
@@ -60,6 +49,18 @@ class InstallationCommand extends Command
 
         // set mail configuration
         $this->setMailConfig($mailDriver, $mailHost, $mailPort, $mailUsername, $mailPassword, $mailEncryption);
+
+        // set application key
+        $this->call('key:generate');
+
+        // migrate fresh
+        $this->call('migrate:fresh');
+
+        // seed database
+        $this->call('db:seed');
+
+        // install jwt secret
+        $this->call('jwt:secret');
     }
 
     private function setAppName(mixed $appName = 'Task Management')
@@ -71,6 +72,8 @@ class InstallationCommand extends Command
         $envContent = preg_replace('/APP_NAME=(.*)/', "APP_NAME=\"$appName\"", $envContent);
 
         file_put_contents($envFile, $envContent);
+
+        config(['app.name' => $appName]);
     }
 
     private function setDatabaseConfig(mixed $dbHost, mixed $dbName, mixed $dbUser, mixed $dbPassword)
@@ -85,6 +88,11 @@ class InstallationCommand extends Command
         $envContent = preg_replace('/DB_PASSWORD=(.*)/', "DB_PASSWORD=\"$dbPassword\"", $envContent);
 
         file_put_contents($envFile, $envContent);
+
+        config(['database.connections.mysql.host' => $dbHost]);
+        config(['database.connections.mysql.database' => $dbName]);
+        config(['database.connections.mysql.username' => $dbUser]);
+        config(['database.connections.mysql.password' => $dbPassword]);
     }
 
     private function setMailConfig(mixed $mailDriver, mixed $mailHost, mixed $mailPort, mixed $mailUsername, mixed $mailPassword, mixed $mailEncryption)
@@ -101,5 +109,11 @@ class InstallationCommand extends Command
         $envContent = preg_replace('/MAIL_ENCRYPTION=(.*)/', "MAIL_ENCRYPTION=\"$mailEncryption\"", $envContent);
 
         file_put_contents($envFile, $envContent);
+
+        config(['mail.mailers.smtp.host' => $mailHost]);
+        config(['mail.mailers.smtp.port' => $mailPort]);
+        config(['mail.mailers.smtp.username' => $mailUsername]);
+        config(['mail.mailers.smtp.password' => $mailPassword]);
+        config(['mail.mailers.smtp.encryption' => $mailEncryption]);
     }
 }
