@@ -13,6 +13,7 @@ Before you begin, ensure you have met the following requirements:
 - You have installed the latest version of PHP.
 - You have installed the latest version of Composer.
 - You have installed the latest version of MySQL.
+- Need mail configuration for verify account and reset password.
 
 ## Installation
 For the installation of the application, follow the steps below:
