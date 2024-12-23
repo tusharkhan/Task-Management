@@ -48,7 +48,7 @@ class AuthController extends Controller
             'password' => Hash::make($registerRequest->password)
         ]);
 
-        $token = Auth::guard('api')->attempt(['email' => $user->email, 'password' => $registerRequest->password]);
+//        $token = Auth::guard('api')->attempt(['email' => $user->email, 'password' => $registerRequest->password]);
 
         $accessToken = [
             'token' => randomHashString(),
@@ -68,15 +68,13 @@ class AuthController extends Controller
             'brand_name' => config('app.name')
         ];
 
-        if( $token ){
+        if( $user ){
             Mail::to($user->email)->send(new RegistrationVerificationMail($data));
         }
 
         return sendSuccess(
             'Register Success',
             [
-                'access_token' => $token,
-                'token_type' => 'bearer',
                 'user' => $user
             ],
             Response::HTTP_CREATED

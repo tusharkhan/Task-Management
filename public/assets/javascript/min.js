@@ -21,7 +21,7 @@ createTaskModalCenter.on('hide.bs.modal', function (event) {
     $("#action_type").val('create');
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     var priorities;
     var statuses;
 
@@ -29,7 +29,7 @@ $(document).ready(function() {
         includeSelectAllOption: true,
         nonSelectedText: 'Select Statuses',
         buttonWidth: '100%',
-        onChange: function() {
+        onChange: function () {
             statuses = $('#status').val();
             loadTaskData(priorities, statuses);
         },
@@ -47,7 +47,7 @@ $(document).ready(function() {
         includeSelectAllOption: true,
         nonSelectedText: 'Select Priorities',
         buttonWidth: '100%',
-        onChange: function() {
+        onChange: function () {
             priorities = $('#priority').val();
             loadTaskData(priorities, statuses);
         },
@@ -62,7 +62,7 @@ $(document).ready(function() {
     });
 });
 
-logout.on('click', function (){
+logout.on('click', function () {
     const token = localStorage.getItem("access_token");
 
     let logout = logoutUrl();
@@ -81,13 +81,13 @@ logout.on('click', function (){
         }
     });
 
-    if( token ) {
+    if (token) {
         logoutAndRedirect();
     }
 });
 
 
-function createUpdateModal(){
+function createUpdateModal() {
     let title = $("#title").val();
     let dueDate = $("#dueDate").val();
     let description = $("#description").val();
@@ -101,7 +101,7 @@ function createUpdateModal(){
     let taskUrl = taskCreateUrl();
     let method = 'POST';
 
-    if(action_type == 'update'){
+    if (action_type == 'update') {
         let id = $("#task_id").val();
         taskUrl = taskUpdateUrl(id);
 
@@ -137,9 +137,9 @@ function createUpdateModal(){
             xhr.setRequestHeader('Content-Type', 'application/json');
         },
         success: function (response) {
-            if(response.code == 201 || response.code == 200){
+            if (response.code == 201 || response.code == 200) {
                 loadTaskData();
-                if(action_type == 'update'){
+                if (action_type == 'update') {
                     toastr.info(response.message);
                 } else {
                     toastr.success(response.message);
@@ -151,7 +151,7 @@ function createUpdateModal(){
             let errorResponse = error.responseJSON;
             let statusCode = error.status;
 
-            if(statusCode == 422){
+            if (statusCode == 422) {
                 let errors = errorResponse.errors;
                 let titleError = errors.title ? errors.title[0] : '';
                 let dueDateError = errors.due_date ? errors.due_date[0] : '';
@@ -164,7 +164,7 @@ function createUpdateModal(){
                 $("#description_error").text(descriptionError);
                 $("#status_error").text(statusError);
                 $("#priority_error").text(priorityError);
-            } else if(statusCode == 401){
+            } else if (statusCode == 401) {
                 toastr.error("Unauthorized access");
                 loginUrl();
             } else {
@@ -176,7 +176,7 @@ function createUpdateModal(){
     return false;
 }
 
-function deleteTask(id){
+function deleteTask(id) {
     let token = localStorage.getItem("access_token");
     let taskUrl = taskDeleteUrl(id);
 
@@ -188,7 +188,7 @@ function deleteTask(id){
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         },
         success: function (response) {
-            if(response.code == 200){
+            if (response.code == 200) {
                 toastr.warning(response.message);
                 loadTaskData();
             }
@@ -199,7 +199,7 @@ function deleteTask(id){
     });
 }
 
-function editTask(id){
+function editTask(id) {
     createTaskModalCenter.modal('show');
     let token = localStorage.getItem("access_token");
     let showUrl = taskShowUrl(id);
@@ -211,7 +211,7 @@ function editTask(id){
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         },
         success: function (response) {
-            if(response.code == 200){
+            if (response.code == 200) {
                 let task = response.data;
                 let title = task.title;
                 let dueDate = task.due_date;
@@ -235,7 +235,7 @@ function editTask(id){
         },
         error: function (error) {
             let statusCode = error.status;
-            if(statusCode == 401){
+            if (statusCode == 401) {
                 toastr.error("Unauthorized access");
                 logoutAndRedirect();
             } else {
@@ -246,7 +246,7 @@ function editTask(id){
     });
 }
 
-function showTask(id){
+function showTask(id) {
     let viewTaskModalCenter = $("#viewTaskModalCenter");
     let token = localStorage.getItem("access_token");
     let showUrl = taskShowUrl(id);
@@ -259,7 +259,7 @@ function showTask(id){
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         },
         success: function (response) {
-            if(response.code == 200) {
+            if (response.code == 200) {
                 let task = response.data;
                 let title = task.title;
                 let dueDate = task.due_date;
@@ -288,31 +288,31 @@ function showTask(id){
 
 
                 let badgeClass = 'primary';
-                if(priority == 'low'){
+                if (priority == 'low') {
                     badgeClass = 'secondary';
-                } else if(priority == 'medium'){
+                } else if (priority == 'medium') {
                     badgeClass = 'warning';
-                } else if(priority == 'high'){
+                } else if (priority == 'high') {
                     badgeClass = 'danger';
                 }
-                let priorityText = '<span class="badge badge-'+ badgeClass +'" >'+ priority +'</span>'
+                let priorityText = '<span class="badge badge-' + badgeClass + '" >' + priority + '</span>'
                 span_priority.append('Priority : ' + priorityText);
 
                 badgeClass = 'red';
-                if(status == 'pending'){
+                if (status == 'pending') {
                     badgeClass = 'green';
-                } else if(status == 'in_progress'){
+                } else if (status == 'in_progress') {
                     badgeClass = 'yellow';
-                } else if(status == 'completed'){
+                } else if (status == 'completed') {
                     badgeClass = 'red';
                 }
 
                 status = status.replace('_', ' ').toUpperCase();
 
-                let statusText = '<span class="badge badge-'+ badgeClass +'" >'+ status +'</span>'
+                let statusText = '<span class="badge badge-' + badgeClass + '" >' + status + '</span>'
                 span_status.append('Status : ' + statusText);
 
-                span_date.append('Due Date : ' + '<span class="badge badge-dark">'+ dueDate +'</span>');
+                span_date.append('Due Date : ' + '<span class="badge badge-dark">' + dueDate + '</span>');
                 task_des.append(description);
 
 
@@ -320,7 +320,7 @@ function showTask(id){
         },
         error: function (error) {
             let statusCode = error.status;
-            if(statusCode == 401){
+            if (statusCode == 401) {
                 toastr.error("Unauthorized access");
                 logoutAndRedirect();
             } else {
@@ -341,7 +341,7 @@ function loadTaskData(priorities = [], statuses = []) {
     let ul_pending = $(".pending_article .board-content ul");
 
     let taskUrl = taskListUrl();
-    let token   = localStorage.getItem("access_token");
+    let token = localStorage.getItem("access_token");
 
     // data array send as json
     let data = {
@@ -358,7 +358,7 @@ function loadTaskData(priorities = [], statuses = []) {
             xhr.setRequestHeader('Content-Type', 'application/json');
         },
         success: function (response) {
-            if(response.code == 200){
+            if (response.code == 200) {
                 span_completed.text('(0)');
                 ul_completed.empty();
 
@@ -372,9 +372,9 @@ function loadTaskData(priorities = [], statuses = []) {
                 let in_progress = response.data.in_progress;
                 let pending = response.data.pending;
 
-                if( completed ) addCompletedData(response.data.completed);
-                if(in_progress) addInProgressData(response.data.in_progress);
-                if(pending) addPendingData(response.data.pending);
+                if (completed) addCompletedData(response.data.completed);
+                if (in_progress) addInProgressData(response.data.in_progress);
+                if (pending) addPendingData(response.data.pending);
             }
         },
         error: function (error) {
@@ -429,31 +429,47 @@ function addPendingData(data) {
 }
 
 
-function createList(data, color){
-        let task = data;
-        let li = $("<li>").addClass("el");
-        let taskdiv = $("<div>").addClass("task " + color);
-        let rowDiv = $("<div>").addClass("row");
-        let firstCol = $("<div>").addClass("col-12");
-        let rowDiv2 = $("<div>").addClass("row");
-        let secondCol = $("<div>").addClass("col-9");
-        let h3 = $("<h3 class='cursor-pointer' onclick='showTask("+data.id+")' >").text(task.title);
-        let thirdCol = $("<div>").addClass("col-3");
-        let ul = $("<ul>").addClass("action_icon_ul");
-        let editLi = $("<li class='cursor-pointer' onclick='editTask("+ data.id +")'>").addClass("icon flaticon-edit");
-        let deleteLi = $("<li class='cursor-pointer' onclick='deleteTask("+ data.id +")'>").addClass("icon flaticon-garbage text-danger");
-        let fourthCol = $("<div>").addClass("col-12");
-        let taskContent = $("<div>").addClass("task-content").text(task.description);
+function createList(data, color) {
+    let task = data;
+    let li = $("<li>").addClass("el");
+    let taskdiv = $("<div>").addClass("task " + color);
+    let rowDiv = $("<div>").addClass("row");
+    let firstCol = $("<div>").addClass("col-12");
+    let rowDiv2 = $("<div>").addClass("row");
+    let secondCol = $("<div>").addClass("col-9");
+    let h3 = $("<h3 class='cursor-pointer' onclick='showTask(" + data.id + ")' >").text(task.title);
 
-        ul.append(editLi, deleteLi);
-        thirdCol.append(ul);
-        secondCol.append(h3);
-        rowDiv2.append(secondCol, thirdCol);
-        firstCol.append(rowDiv2);
-        fourthCol.append(taskContent);
-        rowDiv.append(firstCol, fourthCol);
-        taskdiv.append(rowDiv);
-        li.append(taskdiv);
+    let badgeClass = 'primary';
+    if (data.priority == 'low') {
+        badgeClass = 'secondary';
+    } else if (data.priority == 'medium') {
+        badgeClass = 'warning';
+    } else if (data.priority == 'high') {
+        badgeClass = 'danger';
+    }
 
-        return li;
+    let priority = data.priority.replace('_', ' ').toUpperCase();
+
+    let priorityText = '<p style="font-size: 15px" class="badge badge-' + badgeClass + '" >' + priority + '</p>'
+
+    let thirdCol = $("<div>").addClass("col-3");
+    let ul = $("<ul>").addClass("action_icon_ul");
+    let editLi = $("<li class='cursor-pointer' onclick='editTask(" + data.id + ")'>").addClass("icon flaticon-edit");
+    let deleteLi = $("<li class='cursor-pointer' onclick='deleteTask(" + data.id + ")'>").addClass("icon flaticon-garbage text-danger");
+    let fourthCol = $("<div>").addClass("col-12");
+    let taskContent = $("<div>").addClass("task-content").text(task.description);
+
+    ul.append(editLi, deleteLi);
+    thirdCol.append(ul);
+    // h3.append(priorityText);
+    secondCol.append(h3);
+    rowDiv2.append(secondCol, thirdCol);
+    firstCol.append(rowDiv2);
+    firstCol.append(priorityText);
+    fourthCol.append(taskContent);
+    rowDiv.append(firstCol, fourthCol);
+    taskdiv.append(rowDiv);
+    li.append(taskdiv);
+
+    return li;
 }

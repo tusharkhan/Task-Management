@@ -79,7 +79,7 @@
         <p>You requested to reset your password {{$brand_name}} account. Click the button below to reset it:</p>
         <a href="{{$link}}" target="_blank">Reset Password</a>
         <p>If you did not request this password reset, please ignore this email or contact our support team if you have questions.</p>
-        <p>For your security, this link will expire in 1 hours.</p>
+        <p>For your security, this link will expire in <span style="color: #0c66ff">{{ date('F j, Y, g:i a', strtotime($expires_at)) }}</span>.</p>
         <p>Best regards,</p>
         <p>The {{$brand_name}} Team</p>
     </div>

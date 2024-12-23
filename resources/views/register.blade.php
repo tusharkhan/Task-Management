@@ -15,7 +15,7 @@
     <div class="row ">
         <div class="col-md-6 card mx-auto mt-5 p-4">
             <form id="register_form" method="post">
-
+                <div id="alert-register"></div>
                 <div class="login-form">
                     <h3 class="text-center p-4">Task Management Registration</h3>
                     <div class="form-group" >
@@ -96,16 +96,18 @@
                     name: name
                 },
                 success: function (response) {
-                    console.log(response);
                     if ( response.code == 201 ){
-                        let token = response.data.access_token;
-                        let username = response.data.user.name;
-                        // store token in local storage
-                        localStorage.setItem('access_token', token);
-                        localStorage.setItem('username', username);
+                        $('#alert-register').html('<div class="alert alert-primary alert-dismissible fade show" role="alert"> \n' +
+                            '<strong>Success!</strong> Check your email to verify your account. \n' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button></div>');
+                        {{--let token = response.data.access_token;--}}
+                        {{--let username = response.data.user.name;--}}
+                        {{--// store token in local storage--}}
+                        {{--localStorage.setItem('access_token', token);--}}
+                        {{--localStorage.setItem('username', username);--}}
 
-                        // redirect to dashboard
-                        window.location.href = '{{ route('home') }}';
+                        {{--// redirect to dashboard--}}
+                        {{--window.location.href = '{{ route('home') }}';--}}
                     }
                 },
                 error: function (error) {

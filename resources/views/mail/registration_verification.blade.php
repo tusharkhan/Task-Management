@@ -76,7 +76,7 @@
     <!-- Body -->
     <div class="body">
         <p>Hi {{$user->name}},</p>
-        <p>Thank you for registering with {{$brand_name}}! We’re excited to have you on board. This link will expires on <span style="color: #0c66ff">{{ date('Y-m-d', strtotime($expires_at)) }}</span>  </p>
+        <p>Thank you for registering with {{$brand_name}}! We’re excited to have you on board. This link will expires on <span style="color: #0c66ff">{{ date('F j, Y, g:i a', strtotime($expires_at)) }}</span>  </p>
         <p>Please confirm your email address to activate your account:</p>
         <a href="{{ $link }}" target="_blank">Confirm Email Address</a>
         <p>If you did not create an account, you can safely ignore this email.</p>
