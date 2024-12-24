@@ -42,7 +42,11 @@
             if (!token) {
                 window.location.href = '{{ route('login') }}';
             }
-        } else if ( currentUrl == "{{route('login')}}" ){
+        } else if (
+            currentUrl == "{{route('login')}}" ||
+            currentUrl == "{{route('register')}}" ||
+            currentUrl == "{{route('forget.password.get')}}"
+        ){
             if (token) {
                 window.location.href = '{{ route('home') }}';
             }
